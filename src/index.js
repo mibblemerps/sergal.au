@@ -76,12 +76,12 @@ window.Game = {
             .setPrice(10000)
             .setMerpsMultiplier(4);
         let brieCheese = new Cheese('Brie Cheese', 'brie.png')
-            .setDescription('Often enjoyed with crackers.')
+            .setDescription('Often enjoyed with crackers but you don\'t have any.')
             .addPrerequisite(swissCheese)
             .setPrice(100000)
             .setMerpsMultiplier(8);
         let parmesanCheese = new Cheese('Parmesan Cheese', 'parmesan.png')
-            .setDescription('You wouldn\'t eat this on it\'s own but your sergs will!')
+            .setDescription('Seriously underrated.')
             .addPrerequisite(brieCheese)
             .setPrice(1000000)
             .setMerpsMultiplier(16);
@@ -91,31 +91,31 @@ window.Game = {
             .setPrice(10000000)
             .setMerpsMultiplier(32);
 
-        const sergalItem = new SergalItem('Sergal', 'merp-icon.png', 'img/sergal-1.png', 'img/sergal-2.png', 0.5)
+        const sergalItem = new SergalItem('Sergal', 'merp-icon.png', 'img/sergal-1.png', 'img/sergal-2.png', 'merp.mp3', 0.5)
             .setPrice(150)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(1)
             .setDescription('A sergal :3')
             .addPrerequisite(cheddarCheese); // we require the first cheese upgrade so the player understands why they would want more sergals
-        const pinkSergalItem = new SergalItem('Pink Sergal', 'pinksergal-1.png', 'img/pinksergal-1.png', 'img/pinksergal-2.png', 0.6)
+        const pinkSergalItem = new SergalItem('Pink Sergal', 'pinksergal-1.png', 'img/pinksergal-1.png', 'img/pinksergal-2.png', 'merp.mp3', 0.6)
             .setPrice(1000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(4)
             .setDescription('Happy pink sergals.')
             .addPrerequisite(cheddarCheese);
-        const darkSergalItem = new SergalItem('Dark Sergal', 'darksergal-1.png', 'img/darksergal-1.png', 'img/darksergal-2.png', 0.7)
+        const darkSergalItem = new SergalItem('Dark Sergal', 'darksergal-1.png', 'img/darksergal-1.png', 'img/darksergal-2.png', 'merp.mp3', 0.7)
             .setPrice(10000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(8)
             .setDescription('These gray sergals might look scary but they\'re actually just as fluffy.')
             .addPrerequisite(pinkSergalItem);
-        const protogenItem = new SergalItem('Protogen', 'proto-1.png', 'img/proto-1.png', 'img/proto-2.png', 0.8)
+        const protogenItem = new SergalItem('Protogen', 'proto-1.png', 'img/proto-1.png', 'img/proto-2.png', 'beep.mp3', 0.5)
             .setPrice(100000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(16)
             .setDescription('digital serg')
             .addPrerequisite(darkSergalItem);
-        const synthItem = new SergalItem('Synth', 'synth-1.png', 'img/synth-1.png', 'img/synth-2.png', 0.9)
+        const synthItem = new SergalItem('Synth', 'synth-1.png', 'img/synth-1.png', 'img/synth-2.png', 'beep.mp3', 0.75)
             .setPrice(1000000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(32)
@@ -302,8 +302,8 @@ window.Game = {
                 await new Promise(r => setTimeout(r, 1000));
                 continue;
             }
-            let interval = (1 / (this.merpsPerSecond / 2)) * 1000;
-            interval = Math.max(interval, 200);
+            let interval = (1 / (this.merpsPerSecond / 10)) * 1000;
+            interval = Math.min(Math.max(interval, 200), 4000);
 
             await new Promise(r => setTimeout(r, interval));
             if (interval) this.dropCheeseEffect();

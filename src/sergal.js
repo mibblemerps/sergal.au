@@ -17,10 +17,11 @@ const merpQuips = [
 ];
 
 export default class SergalItem extends ShopItem {
-    constructor(name, icon, defaultImage, openImage, volume = 1) {
+    constructor(name, icon, defaultImage, openImage, sound, volume = 1) {
         super(name, icon);
         this.defaultImage = defaultImage;
         this.openImage = openImage;
+        this.sound = sound;
         this.volume = volume;
 
         this.callback = this._callback;
@@ -50,7 +51,7 @@ export default class SergalItem extends ShopItem {
 
             // Open mouth
             img.src = this.openImage;
-            Sound.play('merp.mp3', this.volume);
+            Sound.play(this.sound, this.volume);
             const rect = sergal.getBoundingClientRect();
 
             // Display merp mote
