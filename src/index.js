@@ -51,103 +51,87 @@ window.Game = {
         this.merpCountElements = Game.el.querySelectorAll('[data-merp-count]');
         this.mpsElements = Game.el.querySelectorAll('[data-mps]');
 
-        let cheddarCheese = new Cheese(this, 'cheddar-cheese', 'Cheddar Cheese', 'cheddar.png', 100, 1)
+        this.shop.items.push(new Cheese(this, 'cheddar-cheese', 'Cheddar Cheese', 'cheddar.png', 100, 1)
             .setDescription('Tasty cheddar! It\'s in the name!')
             .setPrice(100)
-            .setMerpsMultiplier(1);
-        let sliceCheese = new Cheese(this, 'slice-cheese', 'Slice Cheese', 'slice.png', 750, 1)
+            .setMerpsMultiplier(1));
+        this.shop.items.push(new Cheese(this, 'slice-cheese', 'Slice Cheese', 'slice.png', 750, 1)
             .setDescription('Processed sliced cheese. It\'s only redeeming quality is that it\'s good in toasties.')
-            .addPrerequisite(cheddarCheese)
+            .addPrerequisite('cheddar-cheese')
             .setPrice(750)
-            .setMerpsMultiplier(1);
-        let mozzarellaCheese = new Cheese(this, 'mozzarella-cheese', 'Mozzarella Cheese', 'mozzarella.png')
+            .setMerpsMultiplier(1));
+        this.shop.items.push(new Cheese(this, 'mozzarella-cheese', 'Mozzarella Cheese', 'mozzarella.png')
             .setDescription('Supposedly healthier for your serg. Makes good cheese pulls.')
-            .addPrerequisite(sliceCheese)
+            .addPrerequisite('slice-cheese')
             .setPrice(1500)
-            .setMerpsMultiplier(2);
-        let swissCheese = new Cheese(this, 'swiss-cheese', 'Swiss Cheese', 'swiss.png')
+            .setMerpsMultiplier(2));
+        this.shop.items.push(new Cheese(this, 'swiss-cheese', 'Swiss Cheese', 'swiss.png')
             .setDescription('Sergs like holes, including those found in swiss cheese!')
-            .addPrerequisite(mozzarellaCheese)
+            .addPrerequisite('mozzarella-cheese')
             .setPrice(10000)
-            .setMerpsMultiplier(4);
-        let brieCheese = new Cheese(this, 'brie-cheese', 'Brie Cheese', 'brie.png')
-            .setDescription('Often enjoyed with crackers but you don\'t have any.')
-            .addPrerequisite(swissCheese)
+            .setMerpsMultiplier(4));
+        this.shop.items.push(new Cheese(this, 'brie-cheese', 'Brie Cheese', 'brie.png')
+            .setDescription('Often enjoyed with crackers, but you don\'t have any.')
+            .addPrerequisite('swiss-cheese')
             .setPrice(100000)
-            .setMerpsMultiplier(8);
-        let parmesanCheese = new Cheese(this, 'parmesan-cheese', 'Parmesan Cheese', 'parmesan.png')
-            .setDescription('Seriously underrated.')
-            .addPrerequisite(brieCheese)
+            .setMerpsMultiplier(8));
+        this.shop.items.push(new Cheese(this, 'parmesan-cheese', 'Parmesan Cheese', 'parmesan.png')
+            .setDescription('Underrated.')
+            .addPrerequisite('brie-cheese')
             .setPrice(1000000)
-            .setMerpsMultiplier(16);
-        let puleCheese = new Cheese(this, 'pule-cheese', 'Pule Cheese', 'pule.png')
+            .setMerpsMultiplier(16));
+        this.shop.items.push(new Cheese(this, 'pule-cheese', 'Pule Cheese', 'pule.png')
             .setDescription('The world\'s most expensive cheese for your most precious sergos!')
-            .addPrerequisite(parmesanCheese)
+            .addPrerequisite('parmesan-cheese')
             .setPrice(10000000)
-            .setMerpsMultiplier(32);
+            .setMerpsMultiplier(32));
 
-        const sergalItem = new SergalItem(this, 'sergal', 'Sergal', 'merp-icon.png', 'img/sergal-1.png', 'img/sergal-2.png', 'merp.mp3', 0.5)
+        this.shop.items.push(new SergalItem(this, 'sergal', 'Sergal', 'merp-icon.png', 'img/sergal-1.png', 'img/sergal-2.png', 'merp.mp3', 0.5)
             .setPrice(150)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(1)
             .setDescription('A sergal :3')
-            .addPrerequisite(cheddarCheese); // we require the first cheese upgrade so the player understands why they would want more sergals
-        const pinkSergalItem = new SergalItem(this, 'pink-sergal', 'Pink Sergal', 'pinksergal-1.png', 'img/pinksergal-1.png', 'img/pinksergal-2.png', 'merp.mp3', 0.6)
+            .addPrerequisite('cheddar-cheese')); // we require the first cheese upgrade so the player understands why they would want more sergals
+        this.shop.items.push(new SergalItem(this, 'pink-sergal', 'Pink Sergal', 'pinksergal-1.png', 'img/pinksergal-1.png', 'img/pinksergal-2.png', 'merp.mp3', 0.6)
             .setPrice(1000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(4)
             .setDescription('Happy pink sergals.')
-            .addPrerequisite(cheddarCheese);
-        const darkSergalItem = new SergalItem(this, 'dark-sergal', 'Dark Sergal', 'darksergal-1.png', 'img/darksergal-1.png', 'img/darksergal-2.png', 'merp.mp3', 0.7)
+            .addPrerequisite('cheddar-cheese'));
+        this.shop.items.push(new SergalItem(this, 'dark-sergal', 'Dark Sergal', 'darksergal-1.png', 'img/darksergal-1.png', 'img/darksergal-2.png', 'merp.mp3', 0.7)
             .setPrice(10000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(8)
             .setDescription('These gray sergals might look scary but they\'re actually just as fluffy.')
-            .addPrerequisite(pinkSergalItem);
-        const protogenItem = new SergalItem(this, 'protogen', 'Protogen', 'proto-1.png', 'img/proto-1.png', 'img/proto-2.png', 'beep.mp3', 0.5)
+            .addPrerequisite('pink-sergal'));
+        this.shop.items.push(new SergalItem(this, 'protogen', 'Protogen', 'proto-1.png', 'img/proto-1.png', 'img/proto-2.png', 'beep.mp3', 0.5)
             .setPrice(100000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(16)
             .setDescription('digital serg')
-            .addPrerequisite(darkSergalItem);
-        const synthItem = new SergalItem(this, 'synth', 'Synth', 'synth-1.png', 'img/synth-1.png', 'img/synth-2.png', 'beep.mp3', 0.75)
+            .addPrerequisite('dark-sergal'));
+        this.shop.items.push(new SergalItem(this, 'synth', 'Synth', 'synth-1.png', 'img/synth-1.png', 'img/synth-2.png', 'beep.mp3', 0.75)
             .setPrice(1000000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(32)
             .setDescription('An technologically advanced protogen')
-            .addPrerequisite(protogenItem);
+            .addPrerequisite('protogen'));
 
-        this.manualMerping = new ShopItem(this, 'manual-merping-1', 'Enhanced Manual Merps', 'enhanced-manual-merps.png')
+        this.shop.items.push(new ShopItem(this, 'manual-merping-1', 'Enhanced Manual Merps', 'enhanced-manual-merps.png')
             .setDescription('Your cursor is pointier, this makes clicking sergals 50% more efficient.')
             .setPrice(1500)
             .setCanOnlyOwnOne()
-            .setUnlocksAt(1000)
-        this.manualMerping2 = new ShopItem(this, 'manual-merping-2', 'Further Enhanced Manual Merps', 'further-enhanced-manual-merps.png')
+            .setUnlocksAt(1000));
+        this.shop.items.push(new ShopItem(this, 'manual-merping-2', 'Further Enhanced Manual Merps', 'further-enhanced-manual-merps.png')
             .setDescription('Your cursor is *even* pointier. It now has the ability to extract another 50% more merps per click.')
             .setPrice(15000)
             .setCanOnlyOwnOne()
-            .addPrerequisite(this.manualMerping)
-            .setUnlocksAt(10000);
-
-
-        this.shop.items.push(sergalItem);
-        this.shop.items.push(this.manualMerping);
-        this.shop.items.push(this.manualMerping2);
-        this.shop.items.push(pinkSergalItem);
-        this.shop.items.push(darkSergalItem);
-        this.shop.items.push(protogenItem);
-        this.shop.items.push(synthItem);
-        this.shop.items.push(cheddarCheese);
-        this.shop.items.push(sliceCheese);
-        this.shop.items.push(mozzarellaCheese);
-        this.shop.items.push(swissCheese);
-        this.shop.items.push(brieCheese);
-        this.shop.items.push(parmesanCheese);
-        this.shop.items.push(puleCheese);
+            .addPrerequisite('manual-merping-1')
+            .setUnlocksAt(10000));
 
         if (!this.load()) {
             // Purchase starter sergal
-            sergalItem.increment(true);
+            this.shop.byId('sergal').increment(true);
         }
 
         // Start cheese drop loop
@@ -189,8 +173,8 @@ window.Game = {
 
     get merpClickMultiplier() {
         let multiplier = 1;
-        if (this.manualMerping.owned > 0) multiplier += 0.5;
-        if (this.manualMerping2.owned > 0) multiplier += 0.5;
+        if (this.shop.byId('manual-merping-1').owned > 0) multiplier += 0.5;
+        if (this.shop.byId('manual-merping-2').owned > 0) multiplier += 0.5;
 
         // Combine with base multiplier
         return multiplier * Math.max(this.merpMultiplier, 1);
@@ -248,7 +232,7 @@ window.Game = {
             if (item.canOnlyOwnOne && item.owned > 0) return false;
 
             // Check we own the prerequisites
-            if (!item.prerequisites.every(req => this.shop.items.find(item => item === req && item.owned > 0))) return false;
+            if (!item.prerequisites.every(req => this.shop.items.find(item => item.id === req && item.owned > 0))) return false;
 
             // Check we've reached the unlock threshold
             if (this.highestMerps < item.unlocksAtMerps) return false;
