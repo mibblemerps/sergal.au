@@ -13,11 +13,13 @@ window.Game = {
     el: null,
 
     merps: 0,
-    nextSergalCost: 100,
+    highestMerps: 0,
+
 
     _merpsLastUpdate: null,
     _lastUpdateAt: new Date(),
     _lastCanAfford: null,
+    _lastVisibleInShop: null,
 
     /**
      * @type {HTMLElement}
@@ -40,6 +42,11 @@ window.Game = {
      */
     sergals: [],
 
+    /**
+     * @type {ShopItem}
+     */
+    manualMerping: null,
+
     shop: new Shop(),
 
     setup() {
@@ -53,10 +60,15 @@ window.Game = {
             .setDescription('Tasty cheddar! It\'s in the name!')
             .setPrice(100)
             .setMerpsMultiplier(1);
+        let sliceCheese = new Cheese('Slice Cheese', 'slice.png', 750, 1)
+            .setDescription('Processed sliced cheese. It\'s only redeeming quality is that it\'s good in toasties.')
+            .addPrerequisite(cheddarCheese)
+            .setPrice(750)
+            .setMerpsMultiplier(1);
         let mozzarellaCheese = new Cheese('Mozzarella Cheese', 'mozzarella.png')
             .setDescription('Supposedly healthier for your serg. Makes good cheese pulls.')
-            .addPrerequisite(cheddarCheese)
-            .setPrice(1000)
+            .addPrerequisite(sliceCheese)
+            .setPrice(1500)
             .setMerpsMultiplier(2);
         let swissCheese = new Cheese('Swiss Cheese', 'swiss.png')
             .setDescription('Sergs like holes, including those found in swiss cheese!')
@@ -106,17 +118,32 @@ window.Game = {
         const synthItem = new SergalItem('Synth', 'synth-1.png', 'img/synth-1.png', 'img/synth-2.png', 0.9)
             .setPrice(1000000)
             .setNextPurchasePriceMultiplier(2)
-            .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(32)
             .setDescription('An technologically advanced protogen')
             .addPrerequisite(protogenItem);
 
+        this.manualMerping = new ShopItem('Enhanced Manual Merps', 'enhanced-manual-merps.png')
+            .setDescription('Your cursor is pointier, this makes clicking sergals 50% more efficient.')
+            .setPrice(1500)
+            .setCanOnlyOwnOne()
+            .setUnlocksAt(1000)
+        this.manualMerping2 = new ShopItem('Further Enhanced Manual Merps', 'further-enhanced-manual-merps.png')
+            .setDescription('Your cursor is *even* pointier. It now has the ability to extract another 50% more merps per click.')
+            .setPrice(15000)
+            .setCanOnlyOwnOne()
+            .addPrerequisite(this.manualMerping)
+            .setUnlocksAt(10000);
+
+
         this.shop.items.push(sergalItem);
+        this.shop.items.push(this.manualMerping);
+        this.shop.items.push(this.manualMerping2);
         this.shop.items.push(pinkSergalItem);
         this.shop.items.push(darkSergalItem);
         this.shop.items.push(protogenItem);
         this.shop.items.push(synthItem);
         this.shop.items.push(cheddarCheese);
+        this.shop.items.push(sliceCheese);
         this.shop.items.push(mozzarellaCheese);
         this.shop.items.push(swissCheese);
         this.shop.items.push(brieCheese);
@@ -142,6 +169,7 @@ window.Game = {
 
     merp(amount = 1) {
         this.merps += amount;
+        this.highestMerps = Math.max(this.merps, this.highestMerps);
 
         this.update();
     },
@@ -149,17 +177,26 @@ window.Game = {
     get merpsPerSecond() {
         let mps = 0;
         for (let item of this.shop.items) {
-            mps += item.owned * item.merpsPerSecond * this.merpsMultiplier;
+            mps += item.owned * item.merpsPerSecond * this.merpMultiplier;
         }
         return mps;
     },
 
-    get merpsMultiplier() {
+    get merpMultiplier() {
         let multiplier = 0;
         for (let item of this.shop.items) {
             multiplier += (item.merpsMultiplier ?? 0) * item.owned;
         }
         return multiplier;
+    },
+
+    get merpClickMultiplier() {
+        let multiplier = 1;
+        if (this.manualMerping.owned > 0) multiplier += 0.5;
+        if (this.manualMerping2.owned > 0) multiplier += 0.5;
+
+        // Combine with base multiplier
+        return multiplier * Math.max(this.merpMultiplier, 1);
     },
 
     update() {
@@ -183,18 +220,31 @@ window.Game = {
     },
 
     updateShopContainer(force = false) {
+        const isVisibleInShop = (item) => {
+            // Already owned
+            if (item.canOnlyOwnOne && item.owned > 0) return false;
+
+            // Check we own the prerequisites
+            if (!item.prerequisites.every(req => this.shop.items.find(item => item === req && item.owned > 0))) return false;
+
+            // Check we've reached the unlock threshold
+            if (this.highestMerps < item.unlocksAtMerps) return false;
+
+            return true;
+        }
+
         if (!force) {
             // Check if anything has changed
+            let isVisible = [];
             let canAfford = [];
             for (let item of this.shop.items) {
-                if (this.merps >= item.price) {
-                    canAfford.push(item);
-                }
+                if (this.merps >= item.price) canAfford.push(item);
+                if (isVisibleInShop(item)) isVisible.push(item);
             }
-            if (this._lastCanAfford && canAfford.length === this._lastCanAfford.length && canAfford.every((e, i) => {
-                return e === this._lastCanAfford[i]
-            })) return;
+            if (this._lastCanAfford && canAfford.length === this._lastCanAfford.length && canAfford.every((e, i) => { return e === this._lastCanAfford[i]  })) return;
+            if (this._lastVisibleInShop && isVisible.length === this._lastVisibleInShop && isVisible.every((e, i) => { return e === this._lastVisibleInShop[i]; })) return;
             this._lastCanAfford = canAfford;
+            this._lastVisibleInShop = isVisible;
         }
 
         const table = this.shopContainer.querySelector('.items');
@@ -204,11 +254,7 @@ window.Game = {
         const template = table.querySelector('template');
 
         for (const item of this.shop.items) {
-            // Already owned
-            if (item.canOnlyOwnOne && item.owned > 0) continue;
-
-            // Check we own the prerequisites
-            if (!item.prerequisites.every(req => this.shop.items.find(item => item === req && item.owned > 0))) continue;
+            if (!isVisibleInShop(item)) continue;
 
             const entryElm = template.content.cloneNode(true);
 
@@ -275,7 +321,7 @@ window.Game = {
         if (cheeses.length > 0) {
             let cheese = cheeses[Math.floor(Math.random() * cheeses.length)];
             let mote = spawnImageMote(Math.random() * this.sergalContainer.clientWidth, 0, 'cheese-drop-mote', 'img/' + cheese.icon, 3000, this.sergalContainer);
-            mote.addEventListener('click', () => {
+            mote.addEventListener('mousedown', () => {
                 const amount = cheese.merpsMultiplier * 10;
                 this.merp(amount)
                 const merpMoteElement = document.createElement('div');

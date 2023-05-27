@@ -17,6 +17,7 @@ export class ShopItem {
         this.merpsPerSecond = 0;
         this.merpsMultiplier = 0;
         this.prerequisites = [];
+        this.unlocksAtMerps = 0;
         this.callback = null;
         this.owned = 0;
     }
@@ -29,8 +30,10 @@ export class ShopItem {
     setMerpsPerSecond(merpsPerSecond) { this.merpsPerSecond = merpsPerSecond; return this; }
     setMerpsMultiplier(merpsMultiplier) { this.merpsMultiplier = merpsMultiplier; return this; }
     setPrerequisites(prerequisites) { this.prerequisites = prerequisites; return this; }
+    setUnlocksAt(unlocksAt) { this.unlocksAtMerps = unlocksAt; return this; }
     addPrerequisite(prerequisite) { this.prerequisites.push(prerequisite); return this; }
     setCallback(callback) { this.callback = callback; return this; }
+    setCanOnlyOwnOne() { this.nextPurchasePriceMultiplier = null; return this; }
 
     increment(noPriceIncrease = false) {
         if (!noPriceIncrease) this.price = Math.round(this.price * this.nextPurchasePriceMultiplier);

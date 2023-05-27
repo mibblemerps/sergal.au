@@ -1,6 +1,7 @@
 import {ShopItem} from './shop';
 import * as Sound from './sound';
 import {spawnImageMote, spawnMote} from './motes';
+import numberFormat from './number-format';
 
 const merpVariance = 250;
 
@@ -38,22 +39,32 @@ export default class SergalItem extends ShopItem {
         Game.sergalContainer.appendChild(sergal);
         Game.sergals.push(sergal);
 
-        sergal.merpDown = (e, amount) => {
+        sergal.merpDown = (e, delta) => {
             e?.preventDefault();
-            amount = amount ?? this.merpsPerSecond;
-            img.src = this.openImage;
+            delta = delta ?? 1;
+            const isManualMerp = !!e;
 
+            // Calculate merp amount
+            let amount = this.merpsPerSecond * (isManualMerp ? Game.merpClickMultiplier : Game.merpMultiplier);
+            if (amount === 0) return;
+
+            // Open mouth
+            img.src = this.openImage;
             Sound.play('merp.mp3', this.volume);
             const rect = sergal.getBoundingClientRect();
+
+            // Display merp mote
             let x = rect.x + (Math.random() * 150);
             const mote = document.createElement('div');
             mote.classList.add('merp-mote');
-            mote.innerText = 'merp +' + this.merpsPerSecond;
+            mote.innerText = 'merp +' + numberFormat(amount, 1);
             if (Math.random() < 0.01) {
                 mote.innerText = merpQuips[Math.floor(Math.random() * merpQuips.length)];
             }
             spawnMote(x, rect.y, mote, 500);
-            Game.merp(amount);
+
+            // Increment merps
+            Game.merp(amount * delta);
         }
         sergal.merpUp = () => {
             img.src = this.defaultImage;
@@ -75,9 +86,7 @@ export default class SergalItem extends ShopItem {
             await new Promise(r => setTimeout(r, 1000 + (Math.random() * merpVariance - (merpVariance / 2))));
             let delta = (new Date() - lastMerp) / 1000;
             lastMerp = new Date();
-            let merpAmount = this.merpsPerSecond * Game.merpsMultiplier * delta;
-            if (merpAmount === 0) continue;
-            sergal.merpDown(null, merpAmount);
+            sergal.merpDown(null, delta);
             await new Promise(r => setTimeout(r, 100));
             sergal.merpUp();
         }
