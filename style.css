@@ -19,6 +19,15 @@ main > .main-area {
     flex-grow: 1;
 }
 
+footer a { color: aquamarine; }
+footer a:hover { color: #00ffa8; }
+
+#credits {
+    font-family: sans-serif;
+    padding: 50px 150px;
+}
+#credits h1 { margin-top: 0; }
+
 .sergals {
     position: relative;
     height: 100vh;
@@ -92,6 +101,9 @@ main > .main-area {
 }
 
 .shop {
+    display: flex;
+    flex-direction: column;
+
     background: #1a1a1a;
     color: #fff;
     border-right: solid 1px gray;
@@ -108,7 +120,14 @@ main > .main-area {
 
 .shop.hidden {
     margin-left: -20vw;
+}
 
+.shop .items {
+    flex-grow: 1;
+}
+
+.shop h1, .shop h2 {
+    margin: 5px;
 }
 
 .shop .item {
