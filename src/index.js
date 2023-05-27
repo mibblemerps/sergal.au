@@ -94,10 +94,25 @@ window.Game = {
             .setMerpsPerSecond(8)
             .setDescription('These gray sergals might look scary but they\'re actually just as fluffy.')
             .addPrerequisite(pinkSergalItem);
+        const protogenItem = new SergalItem('Protogen', 'proto-1.png', 'img/proto-1.png', 'img/proto-2.png', 0.75)
+            .setPrice(100000)
+            .setNextPurchasePriceMultiplier(2)
+            .setMerpsPerSecond(16)
+            .setDescription('digital serg')
+            .addPrerequisite(darkSergalItem);
+        const synthItem = new SergalItem('Synth', 'synth-1.png', 'img/synth-1.png', 'img/synth-2.png', 1)
+            .setPrice(1000000)
+            .setNextPurchasePriceMultiplier(2)
+            .setNextPurchasePriceMultiplier(2)
+            .setMerpsPerSecond(32)
+            .setDescription('An technologically advanced protogen')
+            .addPrerequisite(protogenItem);
 
         this.shop.items.push(sergalItem);
         this.shop.items.push(pinkSergalItem);
         this.shop.items.push(darkSergalItem);
+        this.shop.items.push(protogenItem);
+        this.shop.items.push(synthItem);
         this.shop.items.push(cheddarCheese);
         this.shop.items.push(mozzarellaCheese);
         this.shop.items.push(swissCheese);
