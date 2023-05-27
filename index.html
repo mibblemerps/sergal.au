@@ -7,14 +7,26 @@ A stupid project by Mibble https://twitter.com/mibbleuwu
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>merp</title>
+    <link rel="icon" type="image/png" href="merp-icon.png">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="prefetch" href="merp.mp3">
 </head>
 <body>
     <main>
-        <img src="sergal-1.png" alt="Sergal" id="sergal" draggable="false">
+        <div class="shop">
+            <h1>Shop</h1>
+            <h2 class="merps-readout"><span data-merp-count></span> merps</h2>
+            <h3 class="mps-readout"><span data-mps></span> merps per second</h3>
+            <div class="items">
+
+            </div>
+        </div>
+        <div class="main-area">
+            <div class="sergals"></div>
+        </div>
     </main>
 
-    <script src="merp.js"></script>
+    <script src="dist/main.js"></script>
 </body>
 </html>

@@ -1,8 +1,10 @@
+* { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 
 body {
     background: #fff;
     transition: background 1s;
+    user-select: none;
 }
 
 main {
@@ -12,17 +14,89 @@ main {
     align-items: center;
 }
 
-#sergal {
-    height: 50vh;
+main > .main-area {
+    height: 100vh;
+    flex-grow: 1;
+}
+
+.sergals {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
+}
+
+.sergal {
+    max-width: 200px;
+    display: flex;
+    flex-shrink: 1;
     cursor: pointer;
     transition: opacity 1s;
 }
 
-#video-container {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    pointer-events: none;
+.sergal > img {
+    width: 100%;
+    object-fit: contain;
 }
+
+.shop {
+    background: #1a1a1a;
+    color: #fff;
+    border-right: solid 1px gray;
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    width: 20vw;
+    height: 100vh;
+
+    text-align: center;
+    font-family: monospace;
+}
+
+.shop .item {
+    display: flex;
+    margin-bottom: 5px;
+    align-items: center;
+    font-size: 1.1em;
+}
+
+.shop .item-count {
+    width: 10px;
+}
+
+.shop .item-name {
+    padding: 0 10px;
+    width: 100%;
+    text-align: left;
+    color: #7ebec2;
+    font-weight: bold;
+}
+
+.shop .item-buy {
+    width: 220px;
+    padding: 4px 5px;
+    background: #428502;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+    transition: 0.5s background;
+    cursor: pointer;
+}
+
+.shop .item-buy svg {
+    display: inline;
+    vertical-align: middle;
+    height: 1em;
+}
+
+.shop .item-buy.item-can-afford:hover {
+    background: #5db601;
+}
+
+.shop .item-buy.item-cannot-afford {
+    background: #424242;
+    cursor: not-allowed;
+}
+
+
 
