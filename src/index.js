@@ -149,14 +149,23 @@ window.Game = {
             .addPrerequisite('parmesan-cheese'));
 
         // Misc
+        this.shop.items.push(new ShopItem(this, 'dark-theme', 'Dark Theme', 'dark-background-icon.png')
+            .setDescription('Dark theme to ease your sergal\'s eyes.')
+            .setPrice(100)
+            .setUnlocksAt(1000)
+            .setCanOnlyOwnOne()
+            .setCallback(() => {
+                this.sergalContainer.style.background = '#333';
+            }));
         this.shop.items.push(new ShopItem(this, 'space-background', 'Space Sergals', 'space-background-icon.png')
             .setDescription('Sergals in space :3')
             .setPrice(1000)
             .setUnlocksAt(100000)
             .setCanOnlyOwnOne()
+            .addPrerequisite('dark-theme')
             .setCallback(() => {
                 this.sergalContainer.style.background = 'url("img/space-background.jpg")';
-            }))
+            }));
 
         if (!this.load()) {
             // Purchase starter sergal
