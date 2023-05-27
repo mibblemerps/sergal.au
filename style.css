@@ -39,6 +39,7 @@ footer a:hover { color: #00ffa8; }
     flex-wrap: wrap;
     gap: 10px;
     padding: 20px;
+    background-size: cover;
 }
 
 .sergal {
@@ -109,9 +110,9 @@ footer a:hover { color: #00ffa8; }
     color: #fff;
     border-right: solid 1px gray;
     box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    width: 20vw;
+    width: 25vw;
     height: 100vh;
+    padding: 10px 0;
 
     text-align: center;
     font-family: monospace;
@@ -120,11 +121,15 @@ footer a:hover { color: #00ffa8; }
 }
 
 .shop.hidden {
-    margin-left: -20vw;
+    margin-left: -25vw;
 }
 
 .shop .items {
+    margin: 10px 0;
     flex-grow: 1;
+    padding: 10px;
+    overflow-y: scroll;
+    background: rgba(255,255,255,0.03);
 }
 
 .shop h1, .shop h2 {

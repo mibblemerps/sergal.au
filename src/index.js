@@ -148,6 +148,16 @@ window.Game = {
             .addPrerequisite('falling-cheese-upgrade-1')
             .addPrerequisite('parmesan-cheese'));
 
+        // Misc
+        this.shop.items.push(new ShopItem(this, 'space-background', 'Space Sergals', 'space-background-icon.png')
+            .setDescription('Sergals in space :3')
+            .setPrice(1000)
+            .setUnlocksAt(100000)
+            .setCanOnlyOwnOne()
+            .setCallback(() => {
+                this.sergalContainer.style.background = 'url("img/space-background.jpg")';
+            }))
+
         if (!this.load()) {
             // Purchase starter sergal
             this.shop.byId('sergal').increment(true);
