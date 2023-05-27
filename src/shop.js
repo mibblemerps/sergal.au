@@ -5,10 +5,20 @@ export class Shop {
          */
         this.items = [];
     }
+
+    byId(id) {
+        for (let item of this.items) {
+            if (item.id === id) return item;
+        }
+        console.warn(`No shop item with the ID "${id}"`);
+        return null;
+    }
 }
 
 export class ShopItem {
-    constructor(name, icon) {
+    constructor(game, id, name, icon) {
+        this.game = game;
+        this.id = id;
         this.name = name;
         this.icon = icon;
         this.description = null;
@@ -39,6 +49,11 @@ export class ShopItem {
         if (!noPriceIncrease) this.price = Math.round(this.price * this.nextPurchasePriceMultiplier);
         this.owned++;
         if (this.callback) this.callback();
+
+        this.game.buyLog.push({
+            id: this.id,
+            noPriceIncrease: noPriceIncrease
+        });
     }
 
     get canOnlyOwnOne() {

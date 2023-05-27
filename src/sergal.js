@@ -17,8 +17,8 @@ const merpQuips = [
 ];
 
 export default class SergalItem extends ShopItem {
-    constructor(name, icon, defaultImage, openImage, sound, volume = 1) {
-        super(name, icon);
+    constructor(game, id, name, icon, defaultImage, openImage, sound, volume = 1) {
+        super(game, id, name, icon);
         this.defaultImage = defaultImage;
         this.openImage = openImage;
         this.sound = sound;
