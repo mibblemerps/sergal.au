@@ -1,11 +1,26 @@
 import {ShopItem} from './shop';
 import * as Sound from './sound';
+import {spawnImageMote, spawnMote} from './motes';
 
 const merpVariance = 250;
 
+const merpQuips = [
+    'uwu',
+    'owo',
+    '>:3',
+    '>///<',
+    'gib cheese',
+    'wedj',
+    'pointy',
+    'beep',
+];
+
 export default class SergalItem extends ShopItem {
-    constructor(name, icon, description, price, increaseMultiplier, merpsPerSecond, merpsMultiplier) {
-        super(name, icon, description, price, increaseMultiplier, merpsPerSecond, merpsMultiplier, null);
+    constructor(name, icon, defaultImage, openImage, volume = 1) {
+        super(name, icon);
+        this.defaultImage = defaultImage;
+        this.openImage = openImage;
+        this.volume = volume;
 
         this.callback = this._callback;
     }
@@ -16,7 +31,7 @@ export default class SergalItem extends ShopItem {
         sergal.dataset.shopId = '0';
         sergal.dataset.lastMerp = new Date().getTime().toString();
         const img = document.createElement('img');
-        img.src = 'sergal-1.png';
+        img.src = this.defaultImage;
         img.alt = 'Sergal';
         img.draggable = false;
         sergal.appendChild(img);
@@ -25,13 +40,23 @@ export default class SergalItem extends ShopItem {
 
         sergal.merpDown = (e, amount) => {
             e?.preventDefault();
-            img.src = 'sergal-2.png';
+            amount = amount ?? this.merpsPerSecond;
+            img.src = this.openImage;
 
-            Sound.play('merp.mp3');
-            Game.merp(amount ?? this.merpsPerSecond);
+            Sound.play('merp.mp3', this.volume);
+            const rect = sergal.getBoundingClientRect();
+            let x = rect.x + (Math.random() * 150);
+            const mote = document.createElement('div');
+            mote.classList.add('merp-mote');
+            mote.innerText = 'merp +' + this.merpsPerSecond;
+            if (Math.random() < 0.01) {
+                mote.innerText = merpQuips[Math.floor(Math.random() * merpQuips.length)];
+            }
+            spawnMote(x, rect.y, mote, 500);
+            Game.merp(amount);
         }
         sergal.merpUp = () => {
-            img.src = 'sergal-1.png';
+            img.src = this.defaultImage;
         }
         sergal.addEventListener('mousedown', sergal.merpDown);
         sergal.addEventListener('mouseup', sergal.merpUp);

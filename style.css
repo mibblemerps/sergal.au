@@ -22,6 +22,8 @@ main > .main-area {
 .sergals {
     position: relative;
     height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -31,6 +33,7 @@ main > .main-area {
 
 .sergal {
     max-width: 200px;
+    align-self: center;
     display: flex;
     flex-shrink: 1;
     cursor: pointer;
@@ -40,6 +43,51 @@ main > .main-area {
 .sergal > img {
     width: 100%;
     object-fit: contain;
+}
+
+@keyframes mote-up-and-fade {
+    from {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-40px);
+        opacity: 0;
+    }
+}
+
+@keyframes mote-fall-from-top {
+    from {
+        transform: translateY(0px) rotate(0deg);
+    }
+    90% {
+        transform: translateY(calc(100vh - 65px)) rotate(90deg);
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        transform: translateY(calc(100vh - 65px)) rotate(100deg);
+    }
+}
+
+.mote {
+    z-index: 50;
+}
+
+.mote.merp-mote {
+    font-family: 'comic sans ms', cursive;
+    font-size: 24px;
+    font-weight: bold;
+    animation-name: mote-up-and-fade;
+    animation-duration: 1s;
+}
+
+.mote.cheese-drop-mote {
+    height: 64px;
+    z-index: -1;
+    animation-name: mote-fall-from-top;
+    animation-timing-function: linear;
+    animation-duration: 1s;
 }
 
 .shop {
@@ -56,14 +104,30 @@ main > .main-area {
 }
 
 .shop .item {
-    display: flex;
     margin-bottom: 5px;
-    align-items: center;
     font-size: 1.1em;
 }
 
+.shop .item .item-main {
+    display: flex;
+    align-items: center;
+}
+
+.shop .item .item-description {
+    color: rgba(255, 255, 255, 0.9);
+    text-align: left;
+    margin-left: 50px;
+}
+
+.shop .item-icon {
+    display: block;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
 .shop .item-count {
-    width: 10px;
+    color: #ff00f1;
 }
 
 .shop .item-name {
