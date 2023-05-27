@@ -3,7 +3,7 @@ import {Shop, ShopItem} from './shop';
 import SergalItem from './sergal';
 import Cheese from './cheese';
 import numberFormat from './number-format';
-import {spawnImageMote} from './motes';
+import {spawnImageMote, spawnMote} from './motes';
 const faCart = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="#fff"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg>';
 
 window.Game = {
@@ -31,6 +31,9 @@ window.Game = {
 
     merpCountElements: null,
     mpsElements: null,
+
+    mouseX: 0,
+    mouseY: 0,
 
     /**
      * @type {HTMLElement[]}
@@ -76,31 +79,31 @@ window.Game = {
             .setPrice(10000000)
             .setMerpsMultiplier(32);
 
-        const sergalItem = new SergalItem('Sergal', 'merp-icon.png', 'img/sergal-1.png', 'img/sergal-2.png', 0.25)
+        const sergalItem = new SergalItem('Sergal', 'merp-icon.png', 'img/sergal-1.png', 'img/sergal-2.png', 0.5)
             .setPrice(150)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(1)
             .setDescription('A sergal :3')
             .addPrerequisite(cheddarCheese); // we require the first cheese upgrade so the player understands why they would want more sergals
-        const pinkSergalItem = new SergalItem('Pink Sergal', 'pinksergal-1.png', 'img/pinksergal-1.png', 'img/pinksergal-2.png', 0.5)
+        const pinkSergalItem = new SergalItem('Pink Sergal', 'pinksergal-1.png', 'img/pinksergal-1.png', 'img/pinksergal-2.png', 0.6)
             .setPrice(1000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(4)
             .setDescription('Happy pink sergals.')
             .addPrerequisite(cheddarCheese);
-        const darkSergalItem = new SergalItem('Dark Sergal', 'darksergal-1.png', 'img/darksergal-1.png', 'img/darksergal-2.png', 0.75)
+        const darkSergalItem = new SergalItem('Dark Sergal', 'darksergal-1.png', 'img/darksergal-1.png', 'img/darksergal-2.png', 0.7)
             .setPrice(10000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(8)
             .setDescription('These gray sergals might look scary but they\'re actually just as fluffy.')
             .addPrerequisite(pinkSergalItem);
-        const protogenItem = new SergalItem('Protogen', 'proto-1.png', 'img/proto-1.png', 'img/proto-2.png', 0.75)
+        const protogenItem = new SergalItem('Protogen', 'proto-1.png', 'img/proto-1.png', 'img/proto-2.png', 0.8)
             .setPrice(100000)
             .setNextPurchasePriceMultiplier(2)
             .setMerpsPerSecond(16)
             .setDescription('digital serg')
             .addPrerequisite(darkSergalItem);
-        const synthItem = new SergalItem('Synth', 'synth-1.png', 'img/synth-1.png', 'img/synth-2.png', 1)
+        const synthItem = new SergalItem('Synth', 'synth-1.png', 'img/synth-1.png', 'img/synth-2.png', 0.9)
             .setPrice(1000000)
             .setNextPurchasePriceMultiplier(2)
             .setNextPurchasePriceMultiplier(2)
@@ -129,6 +132,12 @@ window.Game = {
 
         // Start cheese drop loop
         this.startCheeseDropEffect();
+
+        // Track mouse position
+        document.addEventListener('mousemove', (e) => {
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
+        });
     },
 
     merp(amount = 1) {
@@ -165,6 +174,10 @@ window.Game = {
         }
 
         if (merpsChanged) this.updateShopContainer();
+
+        if (merpsChanged && this.merps >= 15 && this.shopContainer.classList.contains('hidden')) {
+            this.shopContainer.classList.remove('hidden');
+        }
 
         this._merpsLastUpdate = this.merps;
     },
@@ -261,7 +274,16 @@ window.Game = {
 
         if (cheeses.length > 0) {
             let cheese = cheeses[Math.floor(Math.random() * cheeses.length)];
-            spawnImageMote(Math.random() * this.sergalContainer.clientWidth, 0, 'cheese-drop-mote', 'img/' + cheese.icon, 3000, this.sergalContainer);
+            let mote = spawnImageMote(Math.random() * this.sergalContainer.clientWidth, 0, 'cheese-drop-mote', 'img/' + cheese.icon, 3000, this.sergalContainer);
+            mote.addEventListener('click', () => {
+                const amount = cheese.merpsMultiplier * 10;
+                this.merp(amount)
+                const merpMoteElement = document.createElement('div');
+                merpMoteElement.classList.add('merp-mote');
+                merpMoteElement.innerText = 'merp +' + amount;
+                spawnMote(this.mouseX, this.mouseY, merpMoteElement, 500);
+                mote.remove();
+            });
         }
     },
 };

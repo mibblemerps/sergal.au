@@ -34,6 +34,7 @@ main > .main-area {
 .sergal {
     max-width: 200px;
     align-self: center;
+    z-index: 2;
     display: flex;
     flex-shrink: 1;
     cursor: pointer;
@@ -61,7 +62,6 @@ main > .main-area {
         transform: translateY(0px) rotate(0deg);
     }
     90% {
-        transform: translateY(calc(100vh - 65px)) rotate(90deg);
         opacity: 1;
     }
     to {
@@ -84,10 +84,11 @@ main > .main-area {
 
 .mote.cheese-drop-mote {
     height: 64px;
-    z-index: -1;
+    z-index: 3;
     animation-name: mote-fall-from-top;
     animation-timing-function: linear;
     animation-duration: 1s;
+    cursor: grab;
 }
 
 .shop {
@@ -101,6 +102,13 @@ main > .main-area {
 
     text-align: center;
     font-family: monospace;
+
+    transition: margin-left 2s;
+}
+
+.shop.hidden {
+    margin-left: -20vw;
+
 }
 
 .shop .item {

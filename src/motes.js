@@ -4,7 +4,7 @@ export function spawnImageMote(x, y, cssClass, src, lifespan, parent = null) {
     let img = document.createElement('img');
     img.classList.add(cssClass);
     img.src = src;
-    spawnMote(x, y, img, lifespan, parent);
+    return spawnMote(x, y, img, lifespan, parent);
 }
 
 export function spawnMote(x, y, element, lifespan, parent) {
@@ -14,6 +14,7 @@ export function spawnMote(x, y, element, lifespan, parent) {
     element.style.left = x + 'px';
     element.style.top = y + 'px';
     element.style.animationDuration = (lifespan / 1000) + 's';
+    element.ondragstart = () => { return false };
 
     if (parent.childElementCount === 0)
         parent.appendChild(element);
@@ -23,4 +24,6 @@ export function spawnMote(x, y, element, lifespan, parent) {
     setTimeout(() => {
         element.remove();
     }, lifespan - 50);
+
+    return element;
 }
