@@ -50,6 +50,8 @@ A stupid project by Mibble https://twitter.com/mibbleuwu
                 </template>
             </div>
             <footer>
+                <a href="javascript:document.getElementById('options').showModal()">Options</a>
+                <hr>
                 <a href="https://twitter.com/mibbleuwu" target="_blank">Mibble</a> |
                 <a href="https://github.com/mibblemerps/sergal.au" target="_blank">Github</a> |
                 <a href="javascript:document.getElementById('credits').showModal()">Credits</a>
@@ -59,6 +61,19 @@ A stupid project by Mibble https://twitter.com/mibbleuwu
             <div class="sergals"></div>
         </div>
     </main>
+
+    <dialog id="options">
+        <h1>Options</h1>
+        <div>
+            <button onclick="Game.clearSave()">Clear Save</button>
+            <button onclick="Game.exportSave()">Export Save</button>
+            <button onclick="Game.importSave()">Import Save</button>
+        </div>
+        <hr>
+        <form method="dialog">
+            <button style="float: right">Done</button>
+        </form>
+    </dialog>
 
     <dialog id="credits">
         <h1>Credits</h1>

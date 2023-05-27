@@ -45,6 +45,8 @@ export default class SergalItem extends ShopItem {
             delta = delta ?? 1;
             const isManualMerp = !!e;
 
+            if (e && e.button !== 0) return;
+
             // Calculate merp amount
             let amount = this.merpsPerSecond * (isManualMerp ? Game.merpClickMultiplier : Game.merpMultiplier);
             if (amount === 0) return;

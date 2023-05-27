@@ -4,7 +4,9 @@ import SergalItem from './sergal';
 import Cheese from './cheese';
 import numberFormat from './number-format';
 import {spawnImageMote, spawnMote} from './motes';
-const faCart = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="#fff"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg>';
+import {decompressSave, compressSave} from './save-compresser';
+
+const SAVE_FORMAT = 1;
 
 window.Game = {
     /**
@@ -19,6 +21,7 @@ window.Game = {
     _lastUpdateAt: new Date(),
     _lastCanAfford: null,
     _lastVisibleInShop: null,
+    _autosaveEnabled: true,
 
     /**
      * @type {HTMLElement}
@@ -145,7 +148,6 @@ window.Game = {
             .addPrerequisite('falling-cheese-upgrade-1')
             .addPrerequisite('parmesan-cheese'));
 
-
         if (!this.load()) {
             // Purchase starter sergal
             this.shop.byId('sergal').increment(true);
@@ -166,7 +168,7 @@ window.Game = {
 
         // Start autosave loop
         setInterval(() => {
-            this.save();
+            if (this._autosaveEnabled) this.save();
         }, 5000);
     },
 
@@ -212,6 +214,7 @@ window.Game = {
 
     save() {
         let saveData = {
+            format: SAVE_FORMAT,
             merps: this.merps,
             highestMerps: this.highestMerps,
             buyLog: this.buyLog
@@ -223,6 +226,10 @@ window.Game = {
         if (!window.localStorage.saveData) return false;
 
         const saveData = JSON.parse(window.localStorage.saveData);
+        if (saveData.format !== SAVE_FORMAT) {
+            alert('Existing save isn\'t compatible with this version. Your save will be lost.');
+            return false;
+        }
         this.merps = saveData.merps;
         this.highestMerps = saveData.highestMerps;
 
@@ -231,6 +238,37 @@ window.Game = {
         }
 
         return true;
+    },
+
+    async exportSave() {
+        this.save();
+        prompt('Copy this save data...', await compressSave(window.localStorage.saveData));
+    },
+
+    async importSave() {
+        const rawSaveData = prompt('Enter save data...');
+        if (!rawSaveData) return;
+
+        const saveData = await decompressSave(rawSaveData);
+        const parsed = JSON.parse(saveData);
+        if (parsed.format !== SAVE_FORMAT) {
+            alert('This save isn\'t compatible with this version.');
+            return;
+        }
+        if (!confirm(`Merp Clicker Save\n\nMerps: ${numberFormat(parsed.merps)}\nHighest Merps: ${numberFormat(parsed.highestMerps)}\nBought Items: ${parsed.buyLog.length}\n\nDo you want to continue loading? Your current save will be overwritten.`)) return;
+
+        // Put save data into local storage and reload
+        this._autosaveEnabled = false;
+        window.localStorage.saveData = saveData;
+        window.location.reload();
+    },
+
+    clearSave() {
+        if (!confirm('Are you sure you want to clear your Merp Clicker save?')) return;
+
+        // Delete save data and reload
+        delete window.localStorage.saveData;
+        window.location.reload();
     },
 
     update() {

@@ -3,6 +3,7 @@ html, body { margin: 0; padding: 0; }
 
 body {
     background: #fff;
+    font-family: sans-serif;
     transition: background 1s;
     user-select: none;
 }
